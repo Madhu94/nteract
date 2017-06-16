@@ -12,6 +12,7 @@ import type { Notebook, ImmutableNotebook } from "../../../packages/commutable";
 
 import { readFileObservable } from "../../utils/fs";
 import { newKernelByName, newKernel } from "../actions";
+import { remote } from "electron";
 
 const Rx = require("rxjs/Rx");
 
@@ -128,6 +129,11 @@ export const newNotebookEpic = (action$: ActionsObservable) =>
         type: "SET_NOTEBOOK",
         notebook: monocellNotebook
       },
-      newKernel(action.kernelSpec, action.cwd)
+      newKernel(action.kernelSpec, action.cwd),
+      {
+        type: "OVERWRITE_METADATA_FIELD",
+        field: "nteract",
+        value: { version: remote.app.getVersion() }
+      }
     )
   );
